@@ -1,422 +1,168 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+## Introduction
+
+It is now possible to collect a large amount of data about personal
+movement using activity monitoring devices such as a
+[Fitbit](http://www.fitbit.com), [Nike
+Fuelband](http://www.nike.com/us/en_us/c/nikeplus-fuelband), or
+[Jawbone Up](https://jawbone.com/up). These type of devices are part of
+the "quantified self" movement -- a group of enthusiasts who take
+measurements about themselves regularly to improve their health, to
+find patterns in their behavior, or because they are tech geeks. But
+these data remain under-utilized both because the raw data are hard to
+obtain and there is a lack of statistical methods and software for
+processing and interpreting the data.
+
+This assignment makes use of data from a personal activity monitoring
+device. This device collects data at 5 minute intervals through out the
+day. The data consists of two months of data from an anonymous
+individual collected during the months of October and November, 2012
+and include the number of steps taken in 5 minute intervals each day.
+
+## Data
+
+The data for this assignment can be downloaded from the course web
+site:
+
+* Dataset: [Activity monitoring data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip) [52K]
+
+The variables included in this dataset are:
+
+* **steps**: Number of steps taking in a 5-minute interval (missing
+    values are coded as `NA`)
+
+* **date**: The date on which the measurement was taken in YYYY-MM-DD
+    format
+
+* **interval**: Identifier for the 5-minute interval in which
+    measurement was taken
 
 
-## Loading and preprocessing the data
 
 
-```r
-library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-```
-
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
-activity <- read.csv("activity.csv")
-```
+The dataset is stored in a comma-separated-value (CSV) file and there
+are a total of 17,568 observations in this
+dataset.
 
 
+## Assignment
 
-## What is mean total number of steps taken per day?
+This assignment will be described in multiple parts. You will need to
+write a report that answers the questions detailed below. Ultimately,
+you will need to complete the entire assignment in a **single R
+markdown** document that can be processed by **knitr** and be
+transformed into an HTML file.
+
+Throughout your report make sure you always include the code that you
+used to generate the output you present. When writing code chunks in
+the R markdown document, always use `echo = TRUE` so that someone else
+will be able to read the code. **This assignment will be evaluated via
+peer assessment so it is essential that your peer evaluators be able
+to review the code for your analysis**.
+
+For the plotting aspects of this assignment, feel free to use any
+plotting system in R (i.e., base, lattice, ggplot2)
+
+Fork/clone the [GitHub repository created for this
+assignment](http://github.com/rdpeng/RepData_PeerAssessment1). You
+will submit this assignment by pushing your completed files into your
+forked repository on GitHub. The assignment submission will consist of
+the URL to your GitHub repository and the SHA-1 commit ID for your
+repository state.
+
+NOTE: The GitHub repository also contains the dataset for the
+assignment so you do not have to download the data separately.
 
 
-```r
-mean_steps <- aggregate(data =activity, steps ~ date, FUN = mean, na.rm=TRUE)
-hist(mean_steps$steps, main = "Average Steps per Day", col = "blue", xlab = "Number of Steps")
-```
 
-![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+### Loading and preprocessing the data
 
-```r
-median_steps <-aggregate(data =activity, steps ~ date, FUN = median, na.rm=TRUE)
-```
+Show any code that is needed to
 
-### Mean Steps per Day
+1. Load the data (i.e. `read.csv()`)
 
-```
-##          date      steps
-## 1  2012-10-02  0.4375000
-## 2  2012-10-03 39.4166667
-## 3  2012-10-04 42.0694444
-## 4  2012-10-05 46.1597222
-## 5  2012-10-06 53.5416667
-## 6  2012-10-07 38.2465278
-## 7  2012-10-09 44.4826389
-## 8  2012-10-10 34.3750000
-## 9  2012-10-11 35.7777778
-## 10 2012-10-12 60.3541667
-## 11 2012-10-13 43.1458333
-## 12 2012-10-14 52.4236111
-## 13 2012-10-15 35.2048611
-## 14 2012-10-16 52.3750000
-## 15 2012-10-17 46.7083333
-## 16 2012-10-18 34.9166667
-## 17 2012-10-19 41.0729167
-## 18 2012-10-20 36.0937500
-## 19 2012-10-21 30.6284722
-## 20 2012-10-22 46.7361111
-## 21 2012-10-23 30.9652778
-## 22 2012-10-24 29.0104167
-## 23 2012-10-25  8.6527778
-## 24 2012-10-26 23.5347222
-## 25 2012-10-27 35.1354167
-## 26 2012-10-28 39.7847222
-## 27 2012-10-29 17.4236111
-## 28 2012-10-30 34.0937500
-## 29 2012-10-31 53.5208333
-## 30 2012-11-02 36.8055556
-## 31 2012-11-03 36.7048611
-## 32 2012-11-05 36.2465278
-## 33 2012-11-06 28.9375000
-## 34 2012-11-07 44.7326389
-## 35 2012-11-08 11.1770833
-## 36 2012-11-11 43.7777778
-## 37 2012-11-12 37.3784722
-## 38 2012-11-13 25.4722222
-## 39 2012-11-15  0.1423611
-## 40 2012-11-16 18.8923611
-## 41 2012-11-17 49.7881944
-## 42 2012-11-18 52.4652778
-## 43 2012-11-19 30.6979167
-## 44 2012-11-20 15.5277778
-## 45 2012-11-21 44.3993056
-## 46 2012-11-22 70.9270833
-## 47 2012-11-23 73.5902778
-## 48 2012-11-24 50.2708333
-## 49 2012-11-25 41.0902778
-## 50 2012-11-26 38.7569444
-## 51 2012-11-27 47.3819444
-## 52 2012-11-28 35.3576389
-## 53 2012-11-29 24.4687500
-```
-### Median Steps per Day
+2. Process/transform the data (if necessary) into a format suitable for your analysis
 
-```
-##          date steps
-## 1  2012-10-02     0
-## 2  2012-10-03     0
-## 3  2012-10-04     0
-## 4  2012-10-05     0
-## 5  2012-10-06     0
-## 6  2012-10-07     0
-## 7  2012-10-09     0
-## 8  2012-10-10     0
-## 9  2012-10-11     0
-## 10 2012-10-12     0
-## 11 2012-10-13     0
-## 12 2012-10-14     0
-## 13 2012-10-15     0
-## 14 2012-10-16     0
-## 15 2012-10-17     0
-## 16 2012-10-18     0
-## 17 2012-10-19     0
-## 18 2012-10-20     0
-## 19 2012-10-21     0
-## 20 2012-10-22     0
-## 21 2012-10-23     0
-## 22 2012-10-24     0
-## 23 2012-10-25     0
-## 24 2012-10-26     0
-## 25 2012-10-27     0
-## 26 2012-10-28     0
-## 27 2012-10-29     0
-## 28 2012-10-30     0
-## 29 2012-10-31     0
-## 30 2012-11-02     0
-## 31 2012-11-03     0
-## 32 2012-11-05     0
-## 33 2012-11-06     0
-## 34 2012-11-07     0
-## 35 2012-11-08     0
-## 36 2012-11-11     0
-## 37 2012-11-12     0
-## 38 2012-11-13     0
-## 39 2012-11-15     0
-## 40 2012-11-16     0
-## 41 2012-11-17     0
-## 42 2012-11-18     0
-## 43 2012-11-19     0
-## 44 2012-11-20     0
-## 45 2012-11-21     0
-## 46 2012-11-22     0
-## 47 2012-11-23     0
-## 48 2012-11-24     0
-## 49 2012-11-25     0
-## 50 2012-11-26     0
-## 51 2012-11-27     0
-## 52 2012-11-28     0
-## 53 2012-11-29     0
-```
-## What is the average daily activity pattern?
 
+### What is mean total number of steps taken per day?
+
+For this part of the assignment, you can ignore the missing values in
+the dataset.
+
+1. Make a histogram of the total number of steps taken each day
+
+2. Calculate and report the **mean** and **median** total number of steps taken per day
+
+
+### What is the average daily activity pattern?
+
+1. Make a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+
+2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+
+### Imputing missing values
+
+Note that there are a number of days/intervals where there are missing
+values (coded as `NA`). The presence of missing days may introduce
+bias into some calculations or summaries of the data.
+
+1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with `NA`s)
+
+2. Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
+
+4. Make a histogram of the total number of steps taken each day and Calculate and report the **mean** and **median** total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+
+### Are there differences in activity patterns between weekdays and weekends?
+
+For this part the `weekdays()` function may be of some help here. Use
+the dataset with the filled-in missing values for this part.
+
+1. Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
+
+1. Make a panel plot containing a time series plot (i.e. `type = "l"`) of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was created using **simulated data**:
+
+![Sample panel plot](instructions_fig/sample_panelplot.png) 
+
+
+**Your plot will look different from the one above** because you will
+be using the activity monitor data. Note that the above plot was made
+using the lattice system but you can make the same version of the plot
+using any plotting system you choose.
+
+
+## Submitting the Assignment
+
+To submit the assignment:
+
+1. Commit your completed `PA1_template.Rmd` file to the `master` branch of your git repository (you should already be on the `master` branch unless you created new ones)
+
+2. Commit your `PA1_template.md` and `PA1_template.html` files produced by processing your R markdown file with the `knit2html()` function in R (from the **knitr** package)
+
+3. If your document has figures included (it should) then they should have been placed in the `figure/` directory by default (unless you overrode the default). Add and commit the `figure/` directory to your git repository.
+
+4. Push your `master` branch to GitHub.
+
+5. Submit the URL to your GitHub repository for this assignment on the course web site.
+
+In addition to submitting the URL for your GitHub repository, you will
+need to submit the 40 character SHA-1 hash (as string of numbers from
+0-9 and letters from a-f) that identifies the repository commit that
+contains the version of the files you want to submit. You can do this
+in GitHub by doing the following:
+
+1. Go into your GitHub repository web page for this assignment
+
+2. Click on the "?? commits" link where ?? is the number of commits you have in the repository. For example, if you made a total of 10 commits to this repository, the link should say "10 commits".
+
+3. You will see a list of commits that you have made to this repository. The most recent commit is at the very top. If this represents the version of the files you want to submit, then just click the "copy to clipboard" button on the right hand side that should appear when you hover over the SHA-1 hash. Paste this SHA-1 hash into the course web site when you submit your assignment. If you don't want to use the most recent commit, then go down and find the commit you want and copy the SHA-1 hash.
+
+A valid submission will look something like (this is just an **example**!)
 
 ```r
-library(stringr)
-library(lubridate)
+https://github.com/rdpeng/RepData_PeerAssessment1
+
+7c376cc5447f11537f8740af8e07d6facc3d9645
 ```
-
-```
-## 
-## Attaching package: 'lubridate'
-```
-
-```
-## The following object is masked from 'package:base':
-## 
-##     date
-```
-
-```r
-for (arow in 1:nrow(activity)) {
-  time_field <- str_pad(as.character(activity[arow,"interval"]), 4, pad = "0")
-  tmp1 <- substr(time_field,1,2)
-  tmp2 <- substr(time_field, 3,4)
-  tmp_time <- paste(tmp1,tmp2,sep = ":")
-  tmp_date <- as.character(activity[arow,"date"])
-  dtime <- paste(tmp_date, tmp_time, sep = " ")
-  activity[arow,"date_time"] <- dtime
-}
-
-with(activity, {
-        plot(factor(date_time), steps, type="l",xaxt="n")
-})
-```
-
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
-
-###Average daily activity, second possibility (not sure which the instructor was looking for)
-
-
-```r
-with(mean_steps, {
-plot.ts(factor(date), steps)
-})
-```
-
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
-###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
-
-
-```r
-max(activity$steps, na.rm=TRUE)
-```
-
-```
-## [1] 806
-```
-
-## Inputing missing values
-
-### Number of missing values
-
-
-```r
-sum(is.na(activity$steps))
-```
-
-```
-## [1] 2304
-```
-
-
-```r
-full_activity <- activity[1:3]
-full_activity[] <- lapply(full_activity, function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
-```
-
-### Total steps each day
-
-
-```r
-total_full_steps <- aggregate(data =full_activity, steps ~ date, FUN = sum, na.rm=TRUE)
-hist(total_full_steps$steps, xlab = "Steps Each Day", main="Total Steps Each Day")
-```
-
-![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
-### Mean steps in revised data set
-
-
-```r
-aggregate(data =full_activity, steps ~ date, FUN = mean, na.rm=TRUE)
-```
-
-```
-##    date      steps
-## 1     1 37.3825996
-## 2     2  0.4375000
-## 3     3 39.4166667
-## 4     4 42.0694444
-## 5     5 46.1597222
-## 6     6 53.5416667
-## 7     7 38.2465278
-## 8     8 37.3825996
-## 9     9 44.4826389
-## 10   10 34.3750000
-## 11   11 35.7777778
-## 12   12 60.3541667
-## 13   13 43.1458333
-## 14   14 52.4236111
-## 15   15 35.2048611
-## 16   16 52.3750000
-## 17   17 46.7083333
-## 18   18 34.9166667
-## 19   19 41.0729167
-## 20   20 36.0937500
-## 21   21 30.6284722
-## 22   22 46.7361111
-## 23   23 30.9652778
-## 24   24 29.0104167
-## 25   25  8.6527778
-## 26   26 23.5347222
-## 27   27 35.1354167
-## 28   28 39.7847222
-## 29   29 17.4236111
-## 30   30 34.0937500
-## 31   31 53.5208333
-## 32   32 37.3825996
-## 33   33 36.8055556
-## 34   34 36.7048611
-## 35   35 37.3825996
-## 36   36 36.2465278
-## 37   37 28.9375000
-## 38   38 44.7326389
-## 39   39 11.1770833
-## 40   40 37.3825996
-## 41   41 37.3825996
-## 42   42 43.7777778
-## 43   43 37.3784722
-## 44   44 25.4722222
-## 45   45 37.3825996
-## 46   46  0.1423611
-## 47   47 18.8923611
-## 48   48 49.7881944
-## 49   49 52.4652778
-## 50   50 30.6979167
-## 51   51 15.5277778
-## 52   52 44.3993056
-## 53   53 70.9270833
-## 54   54 73.5902778
-## 55   55 50.2708333
-## 56   56 41.0902778
-## 57   57 38.7569444
-## 58   58 47.3819444
-## 59   59 35.3576389
-## 60   60 24.4687500
-## 61   61 37.3825996
-```
-
-### Median steps in revised data set
-
-
-```r
-aggregate(data =full_activity, steps ~ date, FUN = median, na.rm=TRUE)
-```
-
-```
-##    date   steps
-## 1     1 37.3826
-## 2     2  0.0000
-## 3     3  0.0000
-## 4     4  0.0000
-## 5     5  0.0000
-## 6     6  0.0000
-## 7     7  0.0000
-## 8     8 37.3826
-## 9     9  0.0000
-## 10   10  0.0000
-## 11   11  0.0000
-## 12   12  0.0000
-## 13   13  0.0000
-## 14   14  0.0000
-## 15   15  0.0000
-## 16   16  0.0000
-## 17   17  0.0000
-## 18   18  0.0000
-## 19   19  0.0000
-## 20   20  0.0000
-## 21   21  0.0000
-## 22   22  0.0000
-## 23   23  0.0000
-## 24   24  0.0000
-## 25   25  0.0000
-## 26   26  0.0000
-## 27   27  0.0000
-## 28   28  0.0000
-## 29   29  0.0000
-## 30   30  0.0000
-## 31   31  0.0000
-## 32   32 37.3826
-## 33   33  0.0000
-## 34   34  0.0000
-## 35   35 37.3826
-## 36   36  0.0000
-## 37   37  0.0000
-## 38   38  0.0000
-## 39   39  0.0000
-## 40   40 37.3826
-## 41   41 37.3826
-## 42   42  0.0000
-## 43   43  0.0000
-## 44   44  0.0000
-## 45   45 37.3826
-## 46   46  0.0000
-## 47   47  0.0000
-## 48   48  0.0000
-## 49   49  0.0000
-## 50   50  0.0000
-## 51   51  0.0000
-## 52   52  0.0000
-## 53   53  0.0000
-## 54   54  0.0000
-## 55   55  0.0000
-## 56   56  0.0000
-## 57   57  0.0000
-## 58   58  0.0000
-## 59   59  0.0000
-## 60   60  0.0000
-## 61   61 37.3826
-```
-###What is the impact of imputing missing data on the estimates of the total daily number of steps?
-The mean and median values both increase.
-
-## Are there differences in activity patterns between weekdays and weekends?
-
-
-```r
-library(lattice)
-
-mean_steps$weekend <- ifelse(weekdays(as.Date(mean_steps$date)) %in% c("Saturday","Sunday"), "weekend", "weekday")
-
-panel.smoother <- function(x, y) {
-  panel.xyplot(x, y) # show points 
-  panel.loess(x, y)  # show smoothed line 
-}
-
-with(mean_steps, {
-  xyplot(steps ~factor(date) |factor(weekend), 
-         type = "l",
-         xlab = "Date", ylab = "Number of Steps", 
-         main = "Average Steps per Day on Weekdays/Weekends")    
-})
-```
-
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->

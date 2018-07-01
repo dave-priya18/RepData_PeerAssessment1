@@ -1,26 +1,58 @@
-title	output
-Reproducible Research: Peer Assessment 1
-html_document
-keep_md
-true
-Loading and preprocessing the data
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+
+
+```r
 library(dplyr)
+```
+
+```
 ## 
 ## Attaching package: 'dplyr'
+```
+
+```
 ## The following objects are masked from 'package:stats':
 ## 
 ##     filter, lag
+```
+
+```
 ## The following objects are masked from 'package:base':
 ## 
 ##     intersect, setdiff, setequal, union
+```
+
+```r
 activity <- read.csv("activity.csv")
-What is mean total number of steps taken per day?
+```
+
+
+
+## What is mean total number of steps taken per day?
+
+
+```r
 mean_steps <- aggregate(data =activity, steps ~ date, FUN = mean, na.rm=TRUE)
 hist(mean_steps$steps, main = "Average Steps per Day", col = "blue", xlab = "Number of Steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
 
+```r
 median_steps <-aggregate(data =activity, steps ~ date, FUN = median, na.rm=TRUE)
-Mean Steps per Day
+```
+
+### Mean Steps per Day
+
+```
 ##          date      steps
 ## 1  2012-10-02  0.4375000
 ## 2  2012-10-03 39.4166667
@@ -75,7 +107,10 @@ Mean Steps per Day
 ## 51 2012-11-27 47.3819444
 ## 52 2012-11-28 35.3576389
 ## 53 2012-11-29 24.4687500
-Median Steps per Day
+```
+### Median Steps per Day
+
+```
 ##          date steps
 ## 1  2012-10-02     0
 ## 2  2012-10-03     0
@@ -130,14 +165,27 @@ Median Steps per Day
 ## 51 2012-11-27     0
 ## 52 2012-11-28     0
 ## 53 2012-11-29     0
-What is the average daily activity pattern?
+```
+## What is the average daily activity pattern?
+
+
+```r
 library(stringr)
 library(lubridate)
+```
+
+```
 ## 
 ## Attaching package: 'lubridate'
+```
+
+```
 ## The following object is masked from 'package:base':
 ## 
 ##     date
+```
+
+```r
 for (arow in 1:nrow(activity)) {
   time_field <- str_pad(as.character(activity[arow,"interval"]), 4, pad = "0")
   tmp1 <- substr(time_field,1,2)
@@ -151,30 +199,67 @@ for (arow in 1:nrow(activity)) {
 with(activity, {
         plot(factor(date_time), steps, type="l",xaxt="n")
 })
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ###Average daily activity, second possibility (not sure which the instructor was looking for)
 
+
+```r
 with(mean_steps, {
 plot.ts(factor(date), steps)
 })
- ###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+###Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
+
+
+```r
 max(activity$steps, na.rm=TRUE)
+```
+
+```
 ## [1] 806
-Inputing missing values
-Number of missing values
+```
+
+## Inputing missing values
+
+### Number of missing values
+
+
+```r
 sum(is.na(activity$steps))
+```
+
+```
 ## [1] 2304
+```
+
+
+```r
 full_activity <- activity[1:3]
 full_activity[] <- lapply(full_activity, function(x) ifelse(is.na(x), mean(x, na.rm = TRUE), x))
-Total steps each day
+```
+
+### Total steps each day
+
+
+```r
 total_full_steps <- aggregate(data =full_activity, steps ~ date, FUN = sum, na.rm=TRUE)
 hist(total_full_steps$steps, xlab = "Steps Each Day", main="Total Steps Each Day")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+### Mean steps in revised data set
 
 
-Mean steps in revised data set
+```r
 aggregate(data =full_activity, steps ~ date, FUN = mean, na.rm=TRUE)
+```
+
+```
 ##    date      steps
 ## 1     1 37.3825996
 ## 2     2  0.4375000
@@ -237,8 +322,16 @@ aggregate(data =full_activity, steps ~ date, FUN = mean, na.rm=TRUE)
 ## 59   59 35.3576389
 ## 60   60 24.4687500
 ## 61   61 37.3825996
-Median steps in revised data set
+```
+
+### Median steps in revised data set
+
+
+```r
 aggregate(data =full_activity, steps ~ date, FUN = median, na.rm=TRUE)
+```
+
+```
 ##    date   steps
 ## 1     1 37.3826
 ## 2     2  0.0000
@@ -301,9 +394,14 @@ aggregate(data =full_activity, steps ~ date, FUN = median, na.rm=TRUE)
 ## 59   59  0.0000
 ## 60   60  0.0000
 ## 61   61 37.3826
-###What is the impact of imputing missing data on the estimates of the total daily number of steps? The mean and median values both increase.
+```
+###What is the impact of imputing missing data on the estimates of the total daily number of steps?
+The mean and median values both increase.
 
-Are there differences in activity patterns between weekdays and weekends?
+## Are there differences in activity patterns between weekdays and weekends?
+
+
+```r
 library(lattice)
 
 mean_steps$weekend <- ifelse(weekdays(as.Date(mean_steps$date)) %in% c("Saturday","Sunday"), "weekend", "weekday")
@@ -319,3 +417,6 @@ with(mean_steps, {
          xlab = "Date", ylab = "Number of Steps", 
          main = "Average Steps per Day on Weekdays/Weekends")    
 })
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
